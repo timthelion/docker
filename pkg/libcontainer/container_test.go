@@ -66,4 +66,11 @@ func TestContainerJsonFormat(t *testing.T) {
 		t.Log("capabilities mask should not contain SYS_CHROOT")
 		t.Fail()
 	}
+
+	/*for _, n := range devices.DefaultAutoCreatedDevices {
+		if !contains(n, container.DeviceNodes) {
+			t.Logf("devices should contain %s", n.Path)
+			t.Fail()
+		}
+	}*/
 }

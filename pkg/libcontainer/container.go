@@ -64,7 +64,7 @@ type Container struct {
 	// rootfs and mount namespace if specified
 	Mounts Mounts `json:"mounts,omitempty"`
 
-	// The device nodes that should be automatically created within the container upon container start.  Note, make sure that the node is marked as allowed in the cgroup as well!
+	// The device nodes that should be automatically created within the container upon container start.  Note, make sure that the node is marked as allowed in the
 	DeviceNodes []devices.Device `json:"device_nodes,omitempty"`
 }
 

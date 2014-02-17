@@ -837,6 +837,22 @@ func TestRunWithCpuset(t *testing.T) {
 	logDone("run - cpuset 0")
 }
 
+func TestAddingOptionalDevices(t *testing.T) {
+	cmd := exec.Command(dockerBinary, "run", "--device", "/dev/zero:/dev/nulo", "busybox", "sh", "-c", "ls /dev/nulo")
+
+	out, _, err := runCommandWithOutput(cmd)
+	if err != nil {
+		t.Fatal(err, out)
+	}
+
+	if actual := strings.Trim(out, "\r\n"); actual != "/dev/nulo" {
+		t.Fatalf("expected output /dev/nulo, received %s", actual)
+	}
+	deleteAllContainers()
+
+	logDone("run - test --device argument")
+}
+
 func TestDeviceNumbers(t *testing.T) {
 	cmd := exec.Command(dockerBinary, "run", "busybox", "sh", "-c", "ls -l /dev/null")
 
@@ -859,7 +875,7 @@ func TestDeviceNumbers(t *testing.T) {
 }
 
 func TestThatCharacterDevicesActLikeCharacterDevices(t *testing.T) {
-	cmd := exec.Command(dockerBinary, "run", "busybox", "sh", "-c", "dd if=/dev/zero of=/zero bs=1k count=5 2> /dev/null ; du -h /zero")
+	cmd := exec.Command(dockerBinary, "run", "--device", "/dev/zero:/dev/nulo", "busybox", "sh", "-c", "dd if=/dev/zero of=/zero bs=1k count=5 2> /dev/null ; du -h /zero")
 
 	out, _, err := runCommandWithOutput(cmd)
 	if err != nil {
@@ -872,4 +888,20 @@ func TestThatCharacterDevicesActLikeCharacterDevices(t *testing.T) {
 	deleteAllContainers()
 
 	logDone("run - test that character devices work.")
+}
+
+func TestAddingOptionalDevices(t *testing.T) {
+	cmd := exec.Command(dockerBinary, "run", "--device", "/dev/zero:/dev/nulo", "busybox", "sh", "-c", "ls /dev/nulo")
+
+	out, _, err := runCommandWithOutput(cmd)
+	if err != nil {
+		t.Fatal(err, out)
+	}
+
+	if actual := strings.Trim(out, "\r\n"); actual != "/dev/nulo" {
+		t.Fatalf("expected output /dev/nulo, received %s", actual)
+	}
+	deleteAllContainers()
+
+	logDone("run - test --device argument")
 }

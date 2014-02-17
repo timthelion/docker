@@ -29,8 +29,8 @@ func New() *libcontainer.Container {
 			"NEWNET": true,
 		},
 		Cgroups: &cgroups.Cgroup{
-			Parent:          "docker",
-			AllowAllDevices: false,
+			Parent:                "docker",
+			UnlimitedDeviceAccess: false,
 		},
 		Context: libcontainer.Context{},
 	}

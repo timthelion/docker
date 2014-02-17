@@ -49,7 +49,7 @@ func InitializeMountNamespace(rootfs, console string, container *libcontainer.Co
 		return fmt.Errorf("bind mounts %s", err)
 	}
 	if err := nodes.CreateDeviceNodes(rootfs, container.DeviceNodes); err != nil {
-		return fmt.Errorf("create device nodes %s", err)
+		return fmt.Errorf("Create device nodes %s", err)
 	}
 	if err := SetupPtmx(rootfs, console, container.Context["mount_label"]); err != nil {
 		return err

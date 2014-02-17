@@ -110,9 +110,13 @@ func (d *driver) createNetwork(container *libcontainer.Container, c *execdriver.
 
 func (d *driver) setPrivileged(container *libcontainer.Container) (err error) {
 	container.Capabilities = libcontainer.GetAllCapabilities()
-	container.Cgroups.AllowAllDevices = true
+	container.Cgroups.UnlimitedDeviceAccess = true
 
 	delete(container.Context, "restrictions")
+
+	/*	if container.DeviceNodes, err = nodes.GetHostDeviceNodes(); err != nil {
+		return err
+	}*/
 
 	if apparmor.IsEnabled() {
 		container.Context["apparmor_profile"] = "unconfined"

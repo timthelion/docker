@@ -1,11 +1,13 @@
 package lxc
 
 import (
+	"fmt"
 	"strings"
 	"text/template"
 
 	"github.com/dotcloud/docker/daemon/execdriver"
 	"github.com/dotcloud/docker/pkg/label"
+	"github.com/dotcloud/docker/pkg/libcontainer/devices"
 )
 
 const LxcTemplate = `
@@ -47,10 +49,15 @@ lxc.cgroup.devices.allow = a
 {{else}}
 # no implicit access to devices
 lxc.cgroup.devices.deny = a
+
 #Allow the devices passed to us in the AllowedDevices list.
+
 {{range $allowedDevice := .AllowedDevices}}
-lxc.cgroup.devices.allow = {{$allowedDevice.GetCgroupAllowString}}
+
+lxc.cgroup.devices.allow = {{runeToString $allowedDevice.Type}} {{getDeviceNumberString $allowedDevice.MajorNumber}}:{{getDeviceNumberString $allowedDevice.MinorNumber}} {{$allowedDevice.CgroupPermissions}}
+
 {{end}}
+
 {{end}}
 
 # standard mount point
@@ -141,12 +148,18 @@ func getLabel(c map[string][]string, name string) string {
 	return ""
 }
 
+func runeToString(rune rune) string {
+	return fmt.Sprintf("%c", rune)
+}
+
 func init() {
 	var err error
 	funcMap := template.FuncMap{
-		"getMemorySwap":     getMemorySwap,
-		"escapeFstabSpaces": escapeFstabSpaces,
-		"formatMountLabel":  label.FormatMountLabel,
+		"getMemorySwap":         getMemorySwap,
+		"escapeFstabSpaces":     escapeFstabSpaces,
+		"formatMountLabel":      label.FormatMountLabel,
+		"getDeviceNumberString": devices.GetDeviceNumberString,
+		"runeToString":          runeToString,
 	}
 	LxcTemplateCompiled, err = template.New("lxc").Funcs(funcMap).Parse(LxcTemplate)
 	if err != nil {

@@ -13,6 +13,7 @@ import (
 
 	systemd1 "github.com/coreos/go-systemd/dbus"
 	"github.com/dotcloud/docker/pkg/libcontainer/cgroups"
+	"github.com/dotcloud/docker/pkg/libcontainer/devices"
 	"github.com/dotcloud/docker/pkg/systemd"
 	"github.com/godbus/dbus"
 )
@@ -111,7 +112,7 @@ func Apply(c *cgroups.Cgroup, pid int) (cgroups.ActiveCgroup, error) {
 		systemd1.Property{"PIDs", dbus.MakeVariant([]uint32{uint32(pid)})},
 	)
 
-	if !c.AllowAllDevices {
+	if !c.UnlimitedDeviceAccess {
 		properties = append(properties,
 			systemd1.Property{"DevicePolicy", dbus.MakeVariant("strict")})
 	}
@@ -147,7 +148,7 @@ func Apply(c *cgroups.Cgroup, pid int) (cgroups.ActiveCgroup, error) {
 
 	cgroup := props["ControlGroup"].(string)
 
-	if !c.AllowAllDevices {
+	if !c.UnlimitedDeviceAccess {
 		mountpoint, err := cgroups.FindCgroupMountpoint("devices")
 		if err != nil {
 			return nil, err
@@ -156,7 +157,8 @@ func Apply(c *cgroups.Cgroup, pid int) (cgroups.ActiveCgroup, error) {
 		dir := filepath.Join(mountpoint, cgroup)
 		// We use the same method of allowing devices as in the fs backend.  This needs to be changed to use DBUS as soon as possible.  However, that change has to wait untill http://cgit.freedesktop.org/systemd/systemd/commit/?id=90060676c442604780634c0a993e3f9c3733f8e6 has been applied in most commonly used systemd versions.
 		for _, dev := range c.AllowedDevices {
-			if err := writeFile(dir, "devices.allow", dev.GetCgroupAllowString()); err != nil {
+			deviceAllowString := fmt.Sprintf("%c %s:%s %s", dev.Type, devices.GetDeviceNumberString(dev.MajorNumber), devices.GetDeviceNumberString(dev.MinorNumber), dev.CgroupPermissions)
+			if err := writeFile(dir, "devices.allow", deviceAllowString); err != nil {
 				return nil, err
 			}
 		}
