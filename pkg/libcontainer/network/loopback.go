@@ -10,13 +10,6 @@ type Loopback struct {
 }
 
 func (l *Loopback) Create(n *libcontainer.Network, nspid int, context libcontainer.Context) error {
-	name := "lo"
-	if err := SetMtu(name, n.Mtu); err != nil {
-		return err
-	}
-	if err := InterfaceUp(name); err != nil {
-		return err
-	}
 	return nil
 }
 
