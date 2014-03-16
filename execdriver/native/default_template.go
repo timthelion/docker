@@ -31,8 +31,11 @@ func createContainer(c *execdriver.Command) *libcontainer.Container {
 		Context: libcontainer.Context{},
 	}
 
-	if c.Network != nil {
+	container.Networks = []*libcontainer.Network{
+		&loopbackNetwork,
+	}
 
+	if c.Network != nil {
 		vethNetwork := libcontainer.Network{
 			Mtu:     c.Network.Mtu,
 			Address: fmt.Sprintf("%s/%d", c.Network.IPAddress, c.Network.IPPrefixLen),
@@ -43,16 +46,7 @@ func createContainer(c *execdriver.Command) *libcontainer.Container {
 				"bridge": c.Network.Bridge,
 			},
 		}
-
-		container.Networks = []*libcontainer.Network{
-			&vethNetwork,
-			&loopbackNetwork,
-		}
-	} else {
-
-		container.Networks = []*libcontainer.Network{
-			&loopbackNetwork,
-		}
+		container.Networks = append(container.Networks, &vethNetwork)
 	}
 
 	container.Cgroups.Name = c.ID
