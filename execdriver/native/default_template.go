@@ -19,18 +19,39 @@ func createContainer(c *execdriver.Command) *libcontainer.Container {
 	container.WorkingDir = c.WorkingDir
 	container.Env = c.Env
 
+	loopbackNetwork := libcontainer.Network{
+		// Using constants here because
+		// when networking is dissabled
+		// These settings simply don't exist:
+		// https://github.com/dotcloud/docker/blob/c7ea6e5da80af3d9ba7558f876efbf0801d988d8/runtime/container.go#L367
+		Mtu:     1500,
+		Address: fmt.Sprintf("%s/%d", "127.0.0.1", 0),
+		Gateway: "localhost",
+		Type:    "loopback",
+		Context: libcontainer.Context{},
+	}
+
 	if c.Network != nil {
-		container.Networks = []*libcontainer.Network{
-			{
-				Mtu:     c.Network.Mtu,
-				Address: fmt.Sprintf("%s/%d", c.Network.IPAddress, c.Network.IPPrefixLen),
-				Gateway: c.Network.Gateway,
-				Type:    "veth",
-				Context: libcontainer.Context{
-					"prefix": "veth",
-					"bridge": c.Network.Bridge,
-				},
+
+		vethNetwork := libcontainer.Network{
+			Mtu:     c.Network.Mtu,
+			Address: fmt.Sprintf("%s/%d", c.Network.IPAddress, c.Network.IPPrefixLen),
+			Gateway: c.Network.Gateway,
+			Type:    "veth",
+			Context: libcontainer.Context{
+				"prefix": "veth",
+				"bridge": c.Network.Bridge,
 			},
+		}
+
+		container.Networks = []*libcontainer.Network{
+			&vethNetwork,
+			&loopbackNetwork,
+		}
+	} else {
+
+		container.Networks = []*libcontainer.Network{
+			&loopbackNetwork,
 		}
 	}
 
