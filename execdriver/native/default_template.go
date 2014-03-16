@@ -46,7 +46,11 @@ func createContainer(c *execdriver.Command) *libcontainer.Container {
 				"bridge": c.Network.Bridge,
 			},
 		}
-		container.Networks = append(container.Networks, &vethNetwork)
+
+		container.Networks = []*libcontainer.Network{
+			&vethNetwork,
+			&loopbackNetwork,
+		}
 	}
 
 	container.Cgroups.Name = c.ID
