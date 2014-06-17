@@ -67,6 +67,10 @@ application-centric design.
 The best part: because Docker operates at the OS level, it can still be
 run inside a VM!
 
+## Docker is stable
+
+As of Docker 1.0(and even before that) Docker is fundamentally stable.  If you create a Docker image today, you can be sure that it will work with all future Docker releases.
+
 ## Plays well with others
 
 Docker does not require that you buy into a particular programming
