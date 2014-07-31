@@ -120,7 +120,7 @@ committing your changes. Most editors have plug-ins that do this automatically.
 Pull requests descriptions should be as clear as possible and include a
 reference to all the issues that they address.
 
-Pull requests must not contain commits from other users or branches.
+Pull requests must not contain commits from multiple branches.  You should always have your PR being a simple string of commits on top of master.
 
 Commit messages must start with a capitalized and short summary (max. 50
 chars) written in the imperative, followed by an optional, more detailed
