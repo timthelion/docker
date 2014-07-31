@@ -55,7 +55,9 @@ All decisions affecting docker, big and small, follow the same 3 steps:
 
 * Step 3: Accept (`LGTM`) or refuse a pull request. The relevant maintainers do 
 this (see below "Who decides what?")
-
+  - If the pull request appears to be ready to merge, give it a `LGTM` which stands for "Looks Good To Me".
+  - If the pull request has some small problems that need to be changed, make a comment adressing the issues.
+  - If you are not sure that the pull request implements a good feature, if you feel that the pull request is architechurally flawed, or if you feel that the pull request needs more design discussion, close the pull request with a short explanation of what disscussion still needs to be had.  Do not leave such pull requests open as this will waste both your and the contributors time.  You don't want to string a contributor on for weeks or months, having them make many changes to a PR that will eventually be regected.
 
 ## Who decides what?
 
