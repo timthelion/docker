@@ -91,9 +91,14 @@ starts working on it.
 ### ...but check for existing issues first!
 
 Please take a moment to check that an issue doesn't already exist
-documenting your bug report or improvement proposal. If it does, it
-never hurts to add a quick "+1" or "I have this problem too". This will
-help prioritize the most common problems and requests.
+documenting your bug report or improvement proposal. If it does,
+you should 'Subscribe' to the issue by pressing the 'Subscribe' button in the
+right panel.
+
+![Subscribe button](docs/theme/mkdocs/images/subscribe-to-github-issue.png)
+
+This will keep you up to date on the issue's progress and
+help us to prioritize the most common problems and requests.
 
 ### Conventions
 
